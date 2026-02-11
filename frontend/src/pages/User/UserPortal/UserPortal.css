@@ -1,0 +1,112 @@
+/* src/pages/User/UserPortal.css */
+.up-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.up-banner {
+  background-color: #3b82f6;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.up-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.up-selection-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.up-dropdown-card {
+  background-color: #bfdbfe;
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid #3b82f6;
+  width: 200px;
+}
+
+.up-dropdown-card h4 {
+  margin-bottom: 10px;
+  color: #1e3a8a;
+  font-weight: bold;
+}
+
+.up-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #3b82f6;
+  outline: none;
+  cursor: pointer;
+}
+
+.up-grid-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.up-menu-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 30px 10px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.up-menu-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-5px);
+}
+
+.up-logout-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.up-logout-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.up-logout-btn:hover {
+  background-color: #dc2626; /* Hover pe Red taaki logout clear dikhe */
+}
+
+/* Responsive Tweaks */
+@media (max-width: 600px) {
+  .up-banner { font-size: 1.4rem; }
+  .up-grid-menu { grid-template-columns: 1fr 1fr; }
+}
