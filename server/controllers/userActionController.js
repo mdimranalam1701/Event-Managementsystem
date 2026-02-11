@@ -7,20 +7,18 @@ const getVendorsByCategory = async (req, res) => {
     try {
         const categoryParam = req.params.category;
         
-        // Validation: Ensure category is provided
+        
         if (!categoryParam) {
             return res.status(400).json({ message: "Category is required" });
         }
 
-        // Database Query: 
-        // 1. role "Vendor" hona chahiye.
-        // 2. category match karni chahiye (Catering, Florist, etc.)
+        
         const vendors = await User.find({ 
             role: "Vendor", 
             category: categoryParam 
-        }).select('-password'); // Password frontend par nahi bhejna chahiye (Security)
+        }).select('-password'); 
 
-        // Agar koi vendor nahi mila
+        
         if (vendors.length === 0) {
             return res.status(404).json({ message: `No vendors found for category: ${categoryParam}` });
         }
@@ -33,21 +31,20 @@ const getVendorsByCategory = async (req, res) => {
     }
 };
 
-// 2. Kisi specific vendor par click karne par uske items (products) lana
+
 const getVendorProducts = async (req, res) => {
     try {
         const vendorId = req.params.vendorId;
 
-        // Validation: Check if vendorId is provided
+        
         if (!vendorId) {
             return res.status(400).json({ message: "Vendor ID is required" });
         }
 
-        // Database Query:
-        // Item table (productSchema) mein un sabhi products ko dhundo jinka vendorId is vendorId se match kare.
+        
         const products = await Item.find({ vendorId: vendorId });
 
-        // Agar vendor ne abhi tak koi item add nahi kiya hai
+        
         if (products.length === 0) {
             return res.status(404).json({ message: "No products found for this vendor" });
         }
@@ -60,28 +57,28 @@ const getVendorProducts = async (req, res) => {
     }
 };
 
-// Dhyan rakhna uper Item, User, aur Order model import ho chuke hain
+
 const Order = require('../models/orderSchema.js'); 
 
-// 3. Checkout Page: User "Order Now" pe click karega toh Order save hoga
+
 const placeOrder = async (req, res) => {
     try {
-        // Frontend (React) se ye saara data payload mein aayega
+        
         const {
             userId,
             vendorId,
-            items, // Array of objects [{name: "Stage", price: 5000, quantity: 1}]
+            items, 
             totalAmount,
-            billingDetails, // Object {name, email, address, state, pinCode, number}
+            billingDetails, 
             paymentMethod
         } = req.body;
 
-        // Basic validation: Check karo ki zaroori cheezein aayi hain ya nahi
+        
         if (!userId || !vendorId || !items || items.length === 0 || !totalAmount || !paymentMethod) {
             return res.status(400).json({ message: "Incomplete order details. Please check your cart and billing info." });
         }
 
-        // Naya order create karo
+       
         const newOrder = new Order({
             userId,
             vendorId,
@@ -89,15 +86,15 @@ const placeOrder = async (req, res) => {
             totalAmount,
             billingDetails,
             paymentMethod,
-            status: "Received" // Default status as per flowchart
+            status: "Received" 
         });
 
-        // Database mein save karo
+        
         const savedOrder = await newOrder.save();
 
         return res.status(201).json({
             message: "Order placed successfully!",
-            orderId: savedOrder._id // Frontend ko confirmation ke liye bhejna achha rehta hai
+            orderId: savedOrder._id 
         });
 
     } catch (error) {
@@ -106,7 +103,7 @@ const placeOrder = async (req, res) => {
     }
 };
 
-// 4. Order Status Page: User ko uske pichle saare orders dikhana
+
 const getUserOrders = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -115,11 +112,10 @@ const getUserOrders = async (req, res) => {
             return res.status(400).json({ message: "User ID is required" });
         }
 
-        // Database se us user ke saare orders nikalo.
-        // `.populate` bohot zaroori hai! Isse hume vendor ka naam bhi mil jayega UI pe dikhane ke liye (Vendor table se)
+        
         const orders = await Order.find({ userId: userId })
                                   .populate('vendorId', 'name email category') 
-                                  .sort({ createdAt: -1 }); // Latest order sabse upar aayega
+                                  .sort({ createdAt: -1 }); 
 
         if (orders.length === 0) {
             return res.status(404).json({ message: "No orders found for this user." });
@@ -133,7 +129,7 @@ const getUserOrders = async (req, res) => {
     }
 };
 
-// 5. Naya Guest Add karna
+
 const addGuest = async (req, res) => {
     try {
         const { userId, name, contactInfo } = req.body;
@@ -145,7 +141,7 @@ const addGuest = async (req, res) => {
         const newGuest = new Guest({
             userId,
             name,
-            contactInfo // Email ya phone jo bhi aaye
+            contactInfo 
         });
 
         const savedGuest = await newGuest.save();
@@ -157,7 +153,7 @@ const addGuest = async (req, res) => {
     }
 };
 
-// 6. User ke saare Guests ki list fetch karna
+
 const getGuests = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -176,7 +172,7 @@ const getGuests = async (req, res) => {
     }
 };
 
-// 7. Kisi Guest ko Update karna (Flowchart requirement)
+
 const updateGuest = async (req, res) => {
     try {
         const guestId = req.params.guestId;
@@ -185,7 +181,7 @@ const updateGuest = async (req, res) => {
         const updatedGuest = await Guest.findByIdAndUpdate(
             guestId, 
             { name, contactInfo }, 
-            { new: true } // Update hone ke baad naya data return karega
+            { new: true } 
         );
 
         if (!updatedGuest) {
@@ -199,7 +195,7 @@ const updateGuest = async (req, res) => {
     }
 };
 
-// 8. Kisi Guest ko Delete karna (Flowchart requirement)
+
 const deleteGuest = async (req, res) => {
     try {
         const guestId = req.params.guestId;
@@ -217,7 +213,7 @@ const deleteGuest = async (req, res) => {
     }
 };
 
-// Dono naye functions ko exports mein daal do (Pehle walo ke sath mila kar)
+
 module.exports = {
     getVendorsByCategory,
     getVendorProducts,

@@ -2,8 +2,7 @@ const Item = require('../models/productSchema.js');
 const Order = require('../models/orderSchema.js');
 const { uploadOnCloudinary } = require('../utils/cloudinary.js');
 
-// 1. ADD NEW ITEM (Vendor apna naya product add karega)
-// 1. ADD NEW ITEM (WITH CLOUDINARY)
+
 const addItem = async (req, res) => {
     try {
         const { vendorId, name, price } = req.body;
@@ -12,26 +11,26 @@ const addItem = async (req, res) => {
             return res.status(400).json({ message: "Vendor ID, Product Name, and Price are required!" });
         }
 
-        // Multer ne image file req.file mein save kar di hogi
+        
         const imageLocalPath = req.file?.path;
 
         if (!imageLocalPath) {
             return res.status(400).json({ message: "Product Image is required!" });
         }
 
-        // Image ko Cloudinary par bhejo
+        
         const cloudinaryResponse = await uploadOnCloudinary(imageLocalPath);
 
         if (!cloudinaryResponse) {
             return res.status(500).json({ message: "Failed to upload image on Cloudinary" });
         }
 
-        // Naya item banao aur Cloudinary ka URL save karo
+       
         const newItem = new Item({ 
             vendorId, 
             name, 
             price, 
-            image: cloudinaryResponse.url // Yeh secure URL MongoDB mein save ho jayega
+            image: cloudinaryResponse.url 
         });
 
         const savedItem = await newItem.save();
@@ -44,7 +43,7 @@ const addItem = async (req, res) => {
     }
 };
 
-// 2. GET YOUR ITEMS (Vendor apne daale hue saare items dekhega)
+
 const getVendorItems = async (req, res) => {
     try {
         const vendorId = req.params.vendorId;
@@ -55,7 +54,7 @@ const getVendorItems = async (req, res) => {
     }
 };
 
-// 3. UPDATE ITEM (Product ka naam, price ya image change karna)
+
 const updateItem = async (req, res) => {
     try {
         const itemId = req.params.itemId;
@@ -74,7 +73,7 @@ const updateItem = async (req, res) => {
     }
 };
 
-// 4. DELETE ITEM (Product ko delete karna)
+
 const deleteItem = async (req, res) => {
     try {
         const itemId = req.params.itemId;
@@ -87,11 +86,11 @@ const deleteItem = async (req, res) => {
     }
 };
 
-// 5. GET TRANSACTIONS/ORDERS (Vendor apne paas aaye hue orders dekhega)
+
 const getVendorTransactions = async (req, res) => {
     try {
         const vendorId = req.params.vendorId;
-        // User ki details bhi nikal lenge taaki vendor ko pata chale kisne order kiya hai
+        
         const orders = await Order.find({ vendorId: vendorId })
                                   .populate('userId', 'name email') 
                                   .sort({ createdAt: -1 });
@@ -102,11 +101,11 @@ const getVendorTransactions = async (req, res) => {
     }
 };
 
-// 6. UPDATE ORDER STATUS (Radio button se status change karna)
+
 const updateOrderStatus = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        const { status } = req.body; // "Received", "Ready for Shipping", "Out For Delivery"
+        const { status } = req.body; 
 
         const updatedOrder = await Order.findByIdAndUpdate(
             orderId, 

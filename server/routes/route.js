@@ -23,16 +23,16 @@ const {
     addItem, getVendorItems, updateItem, deleteItem, 
     getVendorTransactions, updateOrderStatus 
 } = require('../controllers/vendorController.js');
-// ==========================================
+
 //          AUTH ROUTES (Sabke liye)
-// ==========================================
+
 router.post('/userRegister', customerRegister);
 router.post('/userLogin', customerLogIn);
 
 
-// ==========================================
+
 //          USER (CUSTOMER) ROUTES
-// ==========================================
+
 
 router.get('/user/vendors/:category', authMiddleware, getVendorsByCategory);
 router.get('/user/products/:vendorId', authMiddleware, getVendorProducts);
@@ -44,9 +44,9 @@ router.put('/user/guest/:guestId', authMiddleware, updateGuest);
 router.delete('/user/guest/:guestId', authMiddleware, deleteGuest);
 
 
-// ==========================================
-//          VENDOR ROUTES (Super Secure 🔒)
-// ==========================================
+
+//          VENDOR ROUTES (Super Secure)
+
 
 // Ab bina Vendor account ke koi in APIs ko chhu bhi nahi sakta!
 router.post('/vendor/item', authMiddleware, checkRole('Vendor'), upload.single('image'), addItem);
@@ -59,9 +59,9 @@ router.put('/vendor/order/:orderId/status', authMiddleware, checkRole('Vendor'),
 
 module.exports = router;
 
-// ==========================================
-//          ADMIN ROUTES (Super Secure 🔒)
-// ==========================================
+
+//          ADMIN ROUTES (Super Secure )
+
 
 // Maintenance Menu ke liye saare users lana
 router.get('/admin/users', authMiddleware, checkRole('Admin'), getAllUsers);
